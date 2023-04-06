@@ -2,7 +2,7 @@ server:
   port: 5170
   servlet:
     session:
-      timeout: 60
+      timeout: 60 #session有效时间
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/cckfs
