@@ -1,0 +1,18 @@
+<template>
+  <!--页面主要内容-->
+  <main class="lyear-layout-content">
+    <div id="iframe-content">
+    </div>
+  </main>
+  <!--End 页面主要内容-->
+</template>
+
+<script>
+export default {
+  name: "MainContent"
+}
+</script>
+
+<style scoped>
+
+</style>
