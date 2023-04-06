@@ -25,7 +25,7 @@ class CckfsApplicationTests {
     }
   @Test
     void contextLoads2() {
-      String encode = new BCryptPasswordEncoder().encode("13020505383");
+      String encode = new BCryptPasswordEncoder().encode("123456");
       System.out.println("encode = " + encode);
   }
 
