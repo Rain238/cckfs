@@ -112,7 +112,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="(d,index) in debitData" :key="index">
-                  <td>{{ index + 1 }}</td>
+                  <td>{{ currentPage === 1 ? index + 1 : (index + 1) + currentPage * pageSize - pageSize}}</td>
                   <td>{{ d.date }}</td>
                   <td>{{ d.storeName1 }}</td>
                   <td><span class="badge bg-warning">借</span></td>
@@ -380,12 +380,31 @@ export default {
       }).then(res => {
         console.log(res)
         this.debitData = res.data.debitList
-        // this.currPage = res.data.currPage
+        this.currentPage = res.data.currPage
         this.total = res.data.total
+      })
+    },
+    /**
+     * session状态
+     */
+    sessionStatus() {
+      axios({
+        url: "/api/session/status",
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then(res => {
+        console.log(res)
+        if (res.data.status === "FAILED") {
+          window.location.href='/login';
+          ElMessage.error(res.data.message)
+        }
       })
     },
   },
   mounted() {
+    this.sessionStatus()
     this.time = this.getTime()
     this.getDebitList(this.currentPage, this.pageSize)
   }
