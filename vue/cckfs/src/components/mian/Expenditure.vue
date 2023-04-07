@@ -25,7 +25,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="(b,index) in billingData" :key="index">
-                  <td>{{ index + 1 }}</td>
+                  <td>{{ currentPage === 1 ? index + 1 : (index + 1) + currentPage * pageSize - pageSize}}</td>
                   <td>{{ b.date }}</td>
                   <td>{{ b.jiaheDistribution }}</td>
                   <td>{{ b.customerDistribution }}</td>
@@ -238,7 +238,7 @@ export default {
       }).then(res => {
         console.log(res)
         this.billingData = res.data.billList
-        // this.currPage = res.data.currPage
+        this.currentPage = res.data.currPage
         this.total = res.data.total
       })
     },
@@ -289,8 +289,27 @@ export default {
         })
       }
     },
+    /**
+     * session状态
+     */
+    sessionStatus() {
+      axios({
+        url: "/api/session/status",
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then(res => {
+        console.log(res)
+        if (res.data.status === "FAILED") {
+          window.location.href='/login';
+          ElMessage.error(res.data.message)
+        }
+      })
+    },
   },
   mounted() {
+    this.sessionStatus()
     this.getBillList(this.currentPage, this.pageSize)
   }
 }
