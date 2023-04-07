@@ -259,21 +259,23 @@ public class CrabCastleKingFinancialSystemServiceEntityImpl implements CrabCastl
             BigDecimal totalPayment = b.getJiaheDistribution().add(b.getCustomerDistribution()).add(b.getJambeDistribution()).add(b.getRuimaoDistribution()).add(b.getAuntieDistribution()).add(b.getHuashunDistribution());
             hp[0] = hp[0].add(totalPayment);
         });
-        //会员数量
+        //会员去重数量
+        int memberGoHeavyTotal = mapper.getMemberGoHeavyTotal();
+        //获取会员列表总数用于计算会员总金额
         int memberTotal = mapper.getMemberTotal();
         //会员总金额
-        List<AddMembers> memberList = mapper.getMemberList(0, memberTotal);
+        List<AddMembers> memberList = mapper.getMemberList(0,memberTotal);
         final BigDecimal[] mm = {new BigDecimal(0)};
-        memberList.forEach(m->{
+        memberList.forEach(m -> {
             mm[0] = mm[0].add(m.getAmount());
         });
         //借记列表
-        List<AddDebit> debitList =  mapper.getInProgressDebitList();
+        List<AddDebit> debitList = mapper.getInProgressDebitList();
         Map<String, Object> m = new HashMap<>();
         m.put("tbdDecimal", tbdDecimal[0]);
         m.put("ybdDecimal", ybdDecimal[0]);
         m.put("ha", ha[0]);
-        m.put("memberTotal", memberTotal);
+        m.put("memberTotal", memberGoHeavyTotal);
         m.put("ht", ht[0]);
         //总计收入 历史金额-历史货款
         m.put("totalRevenue", ha[0].subtract(hp[0]));
