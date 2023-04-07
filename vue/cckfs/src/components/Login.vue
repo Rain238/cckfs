@@ -6,7 +6,7 @@
           <div class="text-center mb-3 d-sm-none">
             <a href="index.html"> <img alt="light year admin" src="../assets/images/logo.png"> </a>
           </div>
-          <form method="post" class="signin-form needs-validation" novalidate>
+          <form onsubmit="return false" @keyup.enter="login()" method="post" class="signin-form needs-validation" novalidate>
             <div class="input-container">
               <input v-model="username" type="text" id="input" required="">
               <label for="input" class="label">Username</label>
@@ -64,6 +64,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * 获取验证码
+     */
     getCaptcha() {
       axios({
         url: "/api/createKaptchaCodeImg?d=" + Math.random(),
@@ -79,6 +82,9 @@ export default {
         }
       })
     },
+    /**
+     * 登录提交
+     */
     login() {
       const data = {
         username: this.username,
@@ -103,9 +109,32 @@ export default {
         }
       })
     },
+    /**
+     * session失效后重载验证码
+     */
+    sessionInvalid() {
+      axios({
+        url: "/api/session/invalid ",
+        withCredentials: true,
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then(res => {
+
+      }).catch(e => {
+        this.getCaptcha()
+      })
+    },
+    //父级重定向到当前路径
+    parentRedirection() {
+      //让父级重定向到当前路径
+      if (window !== top) top.location.href = location.href;
+    }
   },
   mounted() {
-    this.getCaptcha()
+    this.parentRedirection()
+    this.sessionInvalid()
   }
 }
 </script>

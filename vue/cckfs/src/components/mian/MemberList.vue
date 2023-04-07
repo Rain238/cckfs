@@ -52,7 +52,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="(m,index) in memberData" :key="index">
-                  <td>{{ index + 1 }}</td>
+                  <td>{{ currentPage === 1 ? index + 1 : (index + 1) + currentPage * pageSize - pageSize}}</td>
                   <td>{{ m.date }}</td>
                   <td>{{ m.cardNumber }}</td>
                   <td>{{ m.name }}</td>
@@ -411,12 +411,31 @@ export default {
       }).then(res => {
         console.log(res)
         this.memberData = res.data.memberList
-        // this.currPage = res.data.currPage
+        this.currentPage = res.data.currPage
         this.total = res.data.total
+      })
+    },
+    /**
+     * session状态
+     */
+    sessionStatus() {
+      axios({
+        url: "/api/session/status",
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then(res => {
+        console.log(res)
+        if (res.data.status === "FAILED") {
+          window.location.href='/login';
+          ElMessage.error(res.data.message)
+        }
       })
     },
   },
   mounted() {
+    this.sessionStatus()
     this.time = this.getTime()
     this.getMemberList(this.currentPage, this.pageSize)
   }

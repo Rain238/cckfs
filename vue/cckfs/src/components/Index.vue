@@ -280,6 +280,7 @@
 <script>
 import axios from "axios";
 import qs from "qs";
+import {ElMessage} from "element-plus";
 
 export default {
   name: "Index",
@@ -462,8 +463,27 @@ export default {
         this.debitList = r.debitList
       })
     },
+    /**
+     * session状态
+     */
+    sessionStatus() {
+      axios({
+        url: "/api/session/status",
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then(res => {
+        console.log(res)
+        if (res.data.status === "FAILED") {
+          window.location.href='/login';
+          ElMessage.error(res.data.message)
+        }
+      })
+    },
   },
   mounted() {
+    this.sessionStatus()
     this.initialIndex()
   }
 }
