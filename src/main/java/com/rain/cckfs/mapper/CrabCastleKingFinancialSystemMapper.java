@@ -41,6 +41,13 @@ public interface CrabCastleKingFinancialSystemMapper {
     @Select("select count(id) from member")
     int getMemberTotal();
 
+    /**
+     * 分组去重后统计计数
+     * @return int
+     */
+    @Select("SELECT COUNT(1) FROM (SELECT COUNT(name) AS num FROM member GROUP BY name) T")
+    int getMemberGoHeavyTotal();
+
     @Select("select id,date,card_number cardNumber,name,amount,user_tel userTel,remark,update_time updateTime  from member order by id desc limit #{start},#{pageSize} ")
     List<AddMembers> getMemberList(int start, int pageSize);
 
@@ -76,4 +83,13 @@ public interface CrabCastleKingFinancialSystemMapper {
 
     @Select("select id,date,store_name1 storeName1,store_name2 storeName2,commodity,payment,flag,update_time updateTime from debit where flag='i' order by id desc")
     List<AddDebit> getInProgressDebitList();
+
+    @Insert("insert into bill values(null,#{date},0,#{cash},0,0,#{oldMember},#{newMember},0,#{jiaheDistribution},#{customerDistribution},#{jambeDistribution},#{ruimaoDistribution},#{huashunDistribution},#{auntieDistribution},#{updateDate})")
+    void insetBill(String date, BigDecimal cash, BigDecimal oldMember, BigDecimal newMember, BigDecimal jiaheDistribution, BigDecimal customerDistribution, BigDecimal jambeDistribution, BigDecimal ruimaoDistribution, BigDecimal huashunDistribution, BigDecimal auntieDistribution, long updateDate);
+
+    @Insert("insert into member values(null,#{date},#{cardNumber},#{name},#{amount},#{userTel},#{remark},#{updateDate})")
+    void insetMemberRecharge(String date, int cardNumber, String name, BigDecimal amount, String userTel, String remark, long updateDate);
+
+    @Insert("insert into bill values(null,#{date},0,#{cash},0,0,#{oldMember},#{newMember},#{huiyan},#{jiaheDistribution},#{customerDistribution},#{jambeDistribution},#{ruimaoDistribution},#{huashunDistribution},#{auntieDistribution},#{updateDate})")
+    void insetBill2(String date, BigDecimal cash, String huiyan, BigDecimal oldMember, BigDecimal newMember, BigDecimal jiaheDistribution, BigDecimal customerDistribution, BigDecimal jambeDistribution, BigDecimal ruimaoDistribution, BigDecimal huashunDistribution, BigDecimal auntieDistribution, long updateDate);
 }
